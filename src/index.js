@@ -4,52 +4,84 @@ function solveSudoku(matrix) {
         unknownValuesCount: 0,
         previousUnknownValuesCount: 0,
         matrix,
-        pseudoMatrix: [],
+        pseudoMatrixes: [],
         maxCount: 10,
         currentCount: 0,
         isLoop: false,
+        isSolve: false,
     };
 
-    /*for (let i = 0; i < matrix.length; i++) {
-        data.pseudoMatrix[i] = new Array(9);
-        for (let j = 0; j < matrix.length; j++) {
-            data.pseudoMatrix[i][j] = 0;
-        }
-    }*/
-
+    /* Solving sudoku without magic */
     do {
-        Object.assign(data,findZeros(data));
-        data.currentCount++;
+        findZeros(data, data.matrix);
+    } while (data.unknownValuesCount > 0 && !data.isLoop);
 
-    } while (data.unknownValuesCount > 0 && data.currentCount < 10);
+    if(!data.isLoop)
+        return matrix;
+
+    initializeWithMagicValues(data);
+
+    console.log('Start solve pseudo matrixes');
+
+    /* Solving sudoku with magic */
+   /* do {
+        data.previousUnknownValuesCount = 0;
+        data.isLoop = false;
+        hackPseudoMatrix(data);
+
+        data.currentCount++
+    } while (false  /!*data.currentCount < 10*!/);*/
 
 
-    console.log(data.pseudoMatrix);
+    //console.log(data.pseudoMatrixes[0]);
 
     return matrix;
 }
 
-function findZeros(data) {
+function findZeros(data, matrix) {
 
     data.unknownValuesCount = 0;
 
-    for (let i = 0; i < data.matrix.length; i++) {
-        for (let j = 0; j < data.matrix.length; j++) {
+    for (let i = 0; i < matrix.length; i++) {
+        for (let j = 0; j < matrix.length; j++) {
 
-            if (data.isLoop) {
-                data.pseudoMatrix[i][j] = hackMagicValue(data, i, j);
-                data.unknownValuesCount++;
-            }
-
-            if (data.matrix[i][j] === 0) {
-                let hackedValue = hackValue(data.matrix, i, j);
+            if (matrix[i][j] === 0) {
+                let hackedValue = hackValue(matrix, i, j);
                 if (hackedValue instanceof Array) {
                     data.unknownValuesCount++;
-                    data.matrix[i][j] = 0;
-                    //data.pseudoMatrix[i][j] = hackedValue;
+                    matrix[i][j] = 0;
                 } else {
-                    data.matrix[i][j] = hackedValue;
+                    matrix[i][j] = hackedValue;
                 }
+            }
+
+        }
+    }
+
+    console.log(data.unknownValuesCount);
+
+    if (data.unknownValuesCount === 0)
+        return;
+
+    setIsLoop(data);
+
+}
+
+/*function findMagicZeros(data, matrix) {
+
+    data.unknownValuesCount = 0;
+
+    for (let i = 0; i < matrix.length; i++) {
+        for (let j = 0; j < matrix.length; j++) {
+
+            if (matrix[i][j] instanceof Array) {
+
+                let value = hackValue(matrix, i, j);
+
+                matrix[i][j] = value;
+
+                if (value instanceof Array)
+                    data.unknownValuesCount++;
 
             }
 
@@ -58,10 +90,73 @@ function findZeros(data) {
 
     console.log(data.unknownValuesCount);
 
+    initializeWithMagicValues(data);
+
     setIsLoop(data);
 
-    return data;
 }
+
+function hackPseudoMatrix(data){
+
+    let lastPseudoMatrix = data.pseudoMatrixes[data.pseudoMatrixes.length - 1];
+
+    let i = 0,
+        j = 0,
+        k = 0;
+
+    hackMagicValue(data, lastPseudoMatrix, i, j, k);
+
+    data.pseudoMatrixes.pop(); // удаляем последнюю версию матрицы
+
+    if (j === lastPseudoMatrix.length && i === lastPseudoMatrix.length
+        && data.unknownValuesCount > 0) {
+
+        let countOfUnknownPositions = data.unknownPositions.length;
+
+        while(countOfUnknownPositions > 0){
+
+
+
+            lastPseudoMatrix = data.pseudoMatrixes[data.pseudoMatrixes.length - 1]; // получаем предпоследнюю версию матрицы
+
+            hackMagicValue(data, lastPseudoMatrix, i, j, k);
+
+            if (countOfUnknownPositions > 0) {
+                data.pseudoMatrixes.pop();
+            }
+
+        }
+
+    }
+
+    console.log(data.pseudoMatrixes[0]);
+
+
+    data.matrix = data.pseudoMatrixes[0];
+
+
+}
+
+function hackMagicValue(data, lastPseudoMatrix, i, j, k) {
+
+    data.unknownPositions = [];
+
+    for (i = 0; i < lastPseudoMatrix.length; i++) {
+        for (j = 0; j < lastPseudoMatrix.length; j++) {
+            for (k = 0; k < lastPseudoMatrix[i][j].length; k++) {
+
+                data.unknownPositions.push({i, j});
+
+                lastPseudoMatrix[i][j] = lastPseudoMatrix[i][j][k];
+
+                findMagicZeros(data, lastPseudoMatrix);
+
+            }
+
+        }
+    }
+
+}*/
 
 function hackValue(matrix, y, x) {
 
@@ -69,8 +164,11 @@ function hackValue(matrix, y, x) {
 
     for (let i = 0; i < matrix.length; i++) {
         for (let j = 0; j < matrix.length; j++) {
-            existsNumbers.push(matrix[y][j]);
-            existsNumbers.push(matrix[j][x]);
+
+            if (!(matrix[y][j] instanceof Array))
+                existsNumbers.push(matrix[y][j]);
+            if (!(matrix[j][x] instanceof Array))
+                existsNumbers.push(matrix[j][x]);
         }
         break;
     }
@@ -80,7 +178,8 @@ function hackValue(matrix, y, x) {
 
     for (let i = YCell * 3; i < (YCell + 1) * 3; i++) {
         for (let j = XCell * 3 ; j < (XCell + 1) * 3; j++) {
-            existsNumbers.push(matrix[i][j]);
+            if (!(matrix[i][j] instanceof Array))
+                existsNumbers.push(matrix[i][j]);
         }
     }
 
@@ -94,26 +193,9 @@ function hackValue(matrix, y, x) {
 
 }
 
-function hackMagicValue(data, y, x) {
-
-    for (let i = 0; i < data.pseudoMatrix.length; i++) {
-        for (let j = 0; j < data.pseudoMatrix.length; j++) {
-            /*if (data.pseudoMatrix[i][j] !== 0) {
-                data.pseudoMatrix[i][j] = data.pseudoMatrix[i][j];
-            }*/
-
-            //data.pseudoMatrix[y][x] = data.pseudoMatrix[y][x]
-        }
-    }
-
-    return data.pseudoMatrix[y][x];
-
-}
-
 function setIsLoop(data) {
     if (data.previousUnknownValuesCount === data.unknownValuesCount) {
         data.isLoop = true;
-        initializeWithMagicValues(data);
     }
     else {
         data.previousUnknownValuesCount = data.unknownValuesCount;
@@ -123,24 +205,26 @@ function setIsLoop(data) {
 
 function initializeWithMagicValues(data) {
 
-    data.pseudoMatrix = data.matrix.slice();
+    let pseudoMatrix = data.matrix.slice();
 
     for (let i = 0; i < data.matrix.length; i++) {
-        data.pseudoMatrix[i] = data.matrix[i].slice();
+        pseudoMatrix[i] = data.matrix[i].slice();
         for (let j = 0; j < data.matrix.length; j++) {
-            data.pseudoMatrix[i][j] = data.matrix[i][j];
+            pseudoMatrix[i][j] = data.matrix[i][j];
         }
     }
 
-    for (let i = 0; i < data.pseudoMatrix.length; i++) {
-        for (let j = 0; j < data.pseudoMatrix.length; j++) {
+    for (let i = 0; i < pseudoMatrix.length; i++) {
+        for (let j = 0; j < pseudoMatrix.length; j++) {
 
-            if (data.pseudoMatrix[i][j] === 0) {
-                data.pseudoMatrix[i][j] = hackValue(data.pseudoMatrix, i, j);
+            if (pseudoMatrix[i][j] === 0) {
+                pseudoMatrix[i][j] = hackValue(pseudoMatrix, i, j);
             }
 
         }
     }
+
+    data.pseudoMatrixes.push(pseudoMatrix);
 }
 
 
