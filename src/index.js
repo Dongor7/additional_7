@@ -4,56 +4,68 @@ function solveSudoku(matrix) {
         unknownValuesCount: 0,
         previousUnknownValuesCount: 0,
         matrix,
-        pseudoMatrixes: [],
-        maxCount: 10,
-        currentCount: 0,
         isLoop: false,
-        isSolve: false,
         unknownPositions: [],
     };
 
     /* Solving sudoku without magic */
     do {
-        findZeros(data, data.matrix);
+        findZeros(data);
     } while (data.unknownValuesCount > 0 && !data.isLoop);
 
     if(!data.isLoop)
         return matrix;
 
-    findUnknownPositions(data);
+    findZeros(data, true);
 
-    let lengthOfUnknownPositions = data.unknownPositions.length;
+    data.deep = 0;
 
-    data.unknownPositions.forEach((pos, i) => {
-
-    });
+    addArrayLevel(data);
 
     return matrix;
 }
 
-function findUnknownPositions(data) {
-    for (let i = 0; i < data.matrix.length; i++) {
-        for (let j = 0; j < data.matrix.length; j++) {
-            if (data.matrix[i][j] instanceof Array)
-                data.unknownPositions.push({i, j});
+function addArrayLevel(data) {
+
+    let element = data.unknownPositions[data.deep];
+
+    data.deep++;
+
+    for (let i = 0; i < element.values.length; i++) {
+
+        if (data.unknownValuesCount === 0) {
+            return
         }
+
+        data.matrix[element.i][element.j] = element.values[i];
+
+        if (data.deep < data.unknownPositions.length) {
+            addArrayLevel(data);
+        } else {
+            findZeros(data);
+            break;
+        }
+
     }
+
 }
 
-function findZeros(data, matrix) {
+function findZeros(data, isFinal) {
 
     data.unknownValuesCount = 0;
 
-    for (let i = 0; i < matrix.length; i++) {
-        for (let j = 0; j < matrix.length; j++) {
+    for (let i = 0; i < data.matrix.length; i++) {
+        for (let j = 0; j < data.matrix.length; j++) {
 
-            if (matrix[i][j] === 0) {
-                let hackedValue = hackValue(matrix, i, j);
-                if (hackedValue instanceof Array) {
-                    data.unknownValuesCount++;
-                    matrix[i][j] = hackedValue;
+            if (data.matrix[i][j] === 0) {
+                let hackedValue = hackValue(data.matrix, i, j);
+                if (!(hackedValue instanceof Array)) {
+                    data.matrix[i][j] = hackedValue;
                 } else {
-                    matrix[i][j] = hackedValue;
+                    data.unknownValuesCount++;
+                    data.matrix[i][j] = 0;
+                    if(isFinal)
+                        data.unknownPositions.push({ i, j, values: hackedValue});
                 }
             }
 
@@ -66,6 +78,21 @@ function findZeros(data, matrix) {
         return;
 
     setIsLoop(data);
+
+}
+
+function checkSudoku(data) {
+
+    for (let i = 0; i < matrix.length; i++) {
+        for (let j = 0; j < matrix.length; j++) {
+
+            if (!(matrix[y][j] instanceof Array))
+                existsNumbers.push(matrix[y][j]);
+            if (!(matrix[j][x] instanceof Array))
+                existsNumbers.push(matrix[j][x]);
+        }
+        break;
+    }
 
 }
 
