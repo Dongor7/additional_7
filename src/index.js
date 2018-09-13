@@ -6,6 +6,7 @@ function solveSudoku(matrix) {
         matrix,
         isLoop: false,
         unknownPositions: [],
+        result: [],
     };
 
     /* Solving sudoku without magic */
@@ -16,7 +17,13 @@ function solveSudoku(matrix) {
     if(!data.isLoop)
         return matrix;
 
+    console.log(matrix);
+    console.log();
+
     findZeros(data, true);
+
+    console.log(data.unknownPositions);
+    console.log();
 
     data.deep = 0;
 
@@ -33,7 +40,7 @@ function addArrayLevel(data) {
 
     for (let i = 0; i < element.values.length; i++) {
 
-        if (data.unknownValuesCount === 0) {
+        if (checkSudoku(data)) {
             return
         }
 
@@ -41,12 +48,13 @@ function addArrayLevel(data) {
 
         if (data.deep < data.unknownPositions.length) {
             addArrayLevel(data);
+            data.deep--;
         } else {
-            findZeros(data);
-            break;
+            return;
         }
-
     }
+
+
 
 }
 
@@ -72,8 +80,6 @@ function findZeros(data, isFinal) {
         }
     }
 
-    console.log(data.unknownValuesCount);
-
     if (data.unknownValuesCount === 0)
         return;
 
@@ -83,17 +89,30 @@ function findZeros(data, isFinal) {
 
 function checkSudoku(data) {
 
-    for (let i = 0; i < matrix.length; i++) {
-        for (let j = 0; j < matrix.length; j++) {
+    let lines = [[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[]];
 
-            if (!(matrix[y][j] instanceof Array))
-                existsNumbers.push(matrix[y][j]);
-            if (!(matrix[j][x] instanceof Array))
-                existsNumbers.push(matrix[j][x]);
+    for (let i = 0; i < data.matrix.length; i++) {
+        for (let j = 0; j < data.matrix.length; j++) {
+            lines[i].push(data.matrix[i][j]);
+            lines[9 + i].push(data.matrix[j][i]);
         }
-        break;
     }
 
+    let isSolved = true;
+
+    lines.forEach(item => {
+        let unique = [...new Set(item)];
+
+        if (unique.length < 9)
+            isSolved = false;
+    });
+
+    console.log('Solving checking');
+    console.log(lines);
+    console.log(isSolved);
+    console.log();
+
+    return isSolved;
 }
 
 function hackValue(matrix, y, x) {
