@@ -19,14 +19,12 @@ function solveSudoku(matrix) {
 
     findZeros(data, true);
 
-    data.previousUnknownPositionCount = data.unknownPositions.length;
-
     while(data.unknownPositions.length > 0) {
         //console.log(data.unknownPositions);
         //console.log();
         compareSets(data);
-        //console.log(data.unknownPositions);
-        //console.log();
+        console.log(data.unknownPositions);
+        console.log();
         findZeros(data, true);
 
         if (data.previousUnknownPositionCount !== data.unknownPositions.length) {
@@ -34,8 +32,8 @@ function solveSudoku(matrix) {
         } else {
             break;
         }
-        //console.log(data.unknownPositions);
-        //console.log();
+        console.log(data.unknownPositions);
+        console.log();
     }
 
     return matrix;
@@ -142,8 +140,92 @@ function compareSets(data) {
 
 function startLoopToCompareThree(data) {
 
+    /* First line */
 
+    let positions = [];
 
+    for (let i = 0 * 3; i < (0 + 1) * 3; i++) {
+        for (let j = 0 * 3 ; j < (0 + 1) * 3; j++) {
+            for (let k = 0; k < data.unknownPositions.length; k++) {
+                if (data.unknownPositions[k].i === i && data.unknownPositions[k].j === j) {
+                    positions.push(data.unknownPositions[k]);
+                }
+            }
+        }
+
+        if (positions.length >= 3) {
+
+        }
+
+    }
+
+    positions = [];
+
+    for (let i = 0 * 3; i < (0 + 1) * 3; i++) {
+        for (let j = 1 * 3 ; j < (1 + 1) * 3; j++) {
+
+        }
+    }
+
+    positions = [];
+
+    for (let i = 0 * 3; i < (0 + 1) * 3; i++) {
+        for (let j = 2 * 3 ; j < (2 + 1) * 3; j++) {
+
+        }
+    }
+
+    /* Second line */
+
+    positions = [];
+
+    for (let i = 1 * 3; i < (1 + 1) * 3; i++) {
+        for (let j = 0 * 3 ; j < (0 + 1) * 3; j++) {
+
+        }
+    }
+
+    positions = [];
+
+    for (let i = 1 * 3; i < (1 + 1) * 3; i++) {
+        for (let j = 1 * 3 ; j < (1 + 1) * 3; j++) {
+
+        }
+    }
+
+    positions = [];
+
+    for (let i = 1 * 3; i < (1 + 1) * 3; i++) {
+        for (let j = 2 * 3 ; j < (2 + 1) * 3; j++) {
+
+        }
+    }
+
+    /* Third line */
+
+    positions = [];
+
+    for (let i = 2 * 3; i < (2 + 1) * 3; i++) {
+        for (let j = 0 * 3 ; j < (0 + 1) * 3; j++) {
+
+        }
+    }
+
+    positions = [];
+
+    for (let i = 2 * 3; i < (2 + 1) * 3; i++) {
+        for (let j = 1 * 3 ; j < (1 + 1) * 3; j++) {
+
+        }
+    }
+
+    positions = [];
+
+    for (let i = 2 * 3; i < (2 + 1) * 3; i++) {
+        for (let j = 2 * 3 ; j < (2 + 1) * 3; j++) {
+
+        }
+    }
 }
 
 function startLoopToCompareTwo(data) {
@@ -248,6 +330,6 @@ const initial = [
     [1, 6, 7, 0, 0, 2, 5, 4, 0]
 ];
 
-//console.log(solveSudoku(initial));
+console.log(solveSudoku(initial));
 
 module.exports = solveSudoku;
