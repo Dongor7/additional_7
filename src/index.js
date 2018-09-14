@@ -23,11 +23,11 @@ function solveSudoku(matrix) {
         //console.log(data.unknownPositions);
         //console.log();
         compareSets(data);
-        console.log(data.unknownPositions);
-        console.log();
+        //console.log(data.unknownPositions);
+        //console.log();
         findZeros(data, true);
-        console.log(data.unknownPositions);
-        console.log();
+        //console.log(data.unknownPositions);
+        //console.log();
     }
 
     return matrix;
@@ -240,6 +240,6 @@ const initial = [
     [1, 6, 7, 0, 0, 2, 5, 4, 0]
 ];
 
-console.log(solveSudoku(initial));
+//console.log(solveSudoku(initial));
 
 module.exports = solveSudoku;
