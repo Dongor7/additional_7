@@ -19,6 +19,8 @@ function solveSudoku(matrix) {
 
     findZeros(data, true);
 
+    data.previousUnknownPositionCount = data.unknownPositions.length;
+
     while(data.unknownPositions.length > 0) {
         //console.log(data.unknownPositions);
         //console.log();
@@ -26,6 +28,12 @@ function solveSudoku(matrix) {
         //console.log(data.unknownPositions);
         //console.log();
         findZeros(data, true);
+
+        if (data.previousUnknownPositionCount !== data.unknownPositions.length) {
+            data.previousUnknownPositionCount = data.unknownPositions.length;
+        } else {
+            break;
+        }
         //console.log(data.unknownPositions);
         //console.log();
     }
