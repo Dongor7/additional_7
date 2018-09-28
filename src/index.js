@@ -109,10 +109,8 @@ function hackValue(matrix, y, x) {
 
 function compareSets(data) {
 
-    require('./twoFilter.js')(data);
-    require('./threeFilter.js')(data);
-    /*startLoopToCompareTwo(data);
-    startLoopToCompareThree(data)*/
+    startLoopToCompareTwo(data);
+    startLoopToCompareThree(data)
 
 }
 
