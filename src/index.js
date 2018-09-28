@@ -19,16 +19,9 @@ function solveSudoku(matrix) {
 
     findZeros(data, true);
 
-    console.log(data.unknownPositions);
-    console.log(data.unknownPositions.length);
-    console.log();
 
     while(data.unknownPositions.length > 0) {
-        //console.log(data.unknownPositions);
-        //console.log();
         compareSets(data);
-        console.log(data.unknownPositions);
-        console.log();
         findZeros(data, true);
 
         if (data.previousUnknownPositionCount !== data.unknownPositions.length) {
@@ -36,8 +29,6 @@ function solveSudoku(matrix) {
         } else {
             break;
         }
-        console.log(data.unknownPositions.sort((a, b) => a.i - b.i));
-        console.log();
     }
 
     if (data.unknownPositions.length === 15){ // 4
@@ -48,9 +39,6 @@ function solveSudoku(matrix) {
     }
 
     findZeros(data, true);
-    console.log(data.unknownPositions);
-    console.log(data.unknownPositions.length);
-    checkSudoku(data);
 
     return matrix;
 }
@@ -157,11 +145,6 @@ function checkSudoku(data) {
         if (unique.length < 9)
             isSolved = false;
     });
-
-    console.log('Solving checking');
-    console.log(lines);
-    console.log(isSolved);
-    console.log();
 
     return isSolved;
 }
@@ -287,9 +270,6 @@ function filterTwoSection(data, offsetI, offsetJ) {
         }
     }
 
-    console.log(`Positions TWO = `, positions);
-    console.log();
-
     if (positions.length >= 2) {
 
         getUniqueValues(data, positions, offsetI, offsetJ);
@@ -384,8 +364,6 @@ function filterByRows(data) {
                                         if(n !== j) {
                                             if (n !== k) {
 
-                                                console.log(data.unknownPositions[n]);
-
                                                 data.unknownPositions[n].values = data.unknownPositions[n].values.filter(item => {
                                                     return uniqueNumbers.indexOf(item) === -1;
                                                 });
@@ -437,8 +415,6 @@ function filterByColumns(data) {
                                     if (n !== i){
                                         if(n !== j) {
                                             if (n !== k) {
-
-                                                console.log(data.unknownPositions[n]);
 
                                                 data.unknownPositions[n].values = data.unknownPositions[n].values.filter(item => {
                                                     return uniqueNumbers.indexOf(item) === -1;
@@ -493,9 +469,6 @@ function filterThreeSection(data, offsetI, offsetJ) {
             }
         }
     }
-
-    console.log(`Positions = `, positions);
-    console.log();
 
     if (positions.length >= 3) {
 
@@ -557,20 +530,5 @@ function removeRepeatedValuesInThreeBySections(data, positions, uniqueNumbers, o
     }
 
 }
-
-
-const initial = [
-    [0, 0, 0, 9, 3, 8, 0, 4, 0],
-    [0, 0, 0, 7, 6, 0, 0, 0, 2],
-    [7, 4, 0, 5, 0, 0, 0, 8, 0],
-    [8, 0, 0, 6, 7, 5, 0, 1, 3],
-    [0, 7, 0, 3, 0, 2, 8, 0, 0],
-    [3, 2, 0, 0, 4, 0, 0, 0, 0],
-    [0, 0, 0, 0, 5, 6, 3, 2, 0],
-    [0, 5, 0, 4, 0, 0, 0, 0, 0],
-    [1, 0, 6, 2, 0, 0, 0, 5, 0]
-];
-
-console.log(solveSudoku(initial));
 
 module.exports = solveSudoku;
