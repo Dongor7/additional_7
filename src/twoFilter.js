@@ -2,7 +2,7 @@ function startLoopToCompareTwo(data) {
 
     filterRows(data);
     filterLines(data);
-    //filterBySections(data);
+    filterBySections(data);
 
 }
 
